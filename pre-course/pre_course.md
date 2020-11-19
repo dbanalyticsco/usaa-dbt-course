@@ -45,7 +45,7 @@ For the purposes of the course, you'll be creating your own dbt Cloud project. T
     - Threads: 2
 8. Click 'Test'. If you the tests pass, click 'Continue'. If the tests fail, return to the prior two steps and make sure all the details are entered correctly.
 9. On the repository page, add a repository from 'Managed'. This will prompt dbt Cloud to create a git repository for you.
-10. Name the repository 'dbt_training' and click 'Create'. You should receive a success message on the page. Click 'Continue'.
+10. Name the repository 'dbt_training_(firstinitial)(lastname)' and click 'Create'. For Dylan Baker, this would be 'dbt_training_dbaker'. You should receive a success message on the page. Click 'Continue'.
 11. You'll be prompted to invite users. Click 'Skip & Complete' at the top of the page.
 
 ### 4. Initialize your dbt project
