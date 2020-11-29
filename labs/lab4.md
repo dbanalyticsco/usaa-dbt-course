@@ -8,13 +8,23 @@ Re-write the following query using CTEs instead of subqueries.
 
 TODO: Dylan, add the query here.
 ```sql
-select *
-from {{ ref('orders') }}
+select
+    customer_id,
+    first_name,
+    last_name,
+    (select round(avg(total_amount),2) from {{ ref('orders') }} where orders.customer_id = customers.customer_id and ordered_at > current_date 180) as avg_order_amount,
+    (select count(*) from {{ ref('orders') }} where orders.customer_id = customers.customer_id and ordered_at > current_date - 180) as order_count
+from {{ ref('customers') }}
+where customer_id in (
+  select distinct customer_id
+  from {{ ref('orders') }}
+  where ordered_at > current_date - 42
+)
 ```
 
 ### 2. Break out the query into ephemeral models.
 
-After reviewing the query, you think it would be useful to add it to your dbt project. However, you think it's too long to exist in a single SQL query and want to break it up.
+After reviewing the query, you think it would be useful to add it to your dbt project. However, you think part of the query is going to be re-usable elsewhere and want to break it up.
 
 Move part of the query into another model. You won't want the new model to appear in the warehouse, so set it to be materialized as ephemeral.
 
