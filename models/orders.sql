@@ -18,6 +18,11 @@ with orders as (
     select *
     from {{ ref('stores_data') }}
 
+), recursive_orders as (
+
+    select *
+    from {{ ref('__recursive_orders') }}
+
 ), deliveries_filtered as (
 
     select *
@@ -35,7 +40,8 @@ with orders as (
         orders.store_id,
         datediff('minutes',orders.ordered_at,deliveries_filtered.delivered_at) as delivery_time_from_order,
         datediff('minutes',deliveries_filtered.picked_up_at,deliveries_filtered.delivered_at) as delivery_time_from_collection,
-        stores.store_name
+        stores.store_name,
+        coalesce(recursive_orders.count_reorders_generated,0) as count_reorders_generated
     from orders
     left join deliveries_filtered
         using (order_id)
@@ -43,6 +49,8 @@ with orders as (
         using (store_id)
     left join customers
         using (customer_id)
+    left join recursive_orders
+        using (order_id)
     where customers.email not ilike '%ecommerce.com'
       and customers.email not ilike '%ecommerce.ca'
       and customers.email not ilike '%ecommerce.co.uk'

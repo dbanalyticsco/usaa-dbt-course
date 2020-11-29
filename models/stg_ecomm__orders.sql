@@ -11,7 +11,8 @@ with base as (
         created_at as ordered_at,
         status as order_status,
         store_id,
-        total_amount
+        total_amount,
+        reordered_from_id
     from base
 
 )

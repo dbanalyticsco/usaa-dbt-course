@@ -11,7 +11,7 @@ We've recently integrated our payments data into Snowflake. The data comes as a 
 
 Create a staging model for the new payments data that includes the following fields:
 * order_id
-* id
+* payment_id
 * payment_type
 * payment_amount
 * created_at
