@@ -32,11 +32,11 @@ A new table has arrived in our warehouse, `deliveries`. The `deliveries` table l
 
 We want to add this table as a source to our project.
 
-### 5. Add delivery time to the orders model
+### 5. Create an `orders` model that includes delivery time dimensions
 
 Now that we have our new `deliveries` data, our partnerships team wants to know how long deliveries took for each order.
 
-Add `delivery_time_from_collection` and `delivery_time_from_order` to your `orders` model. The column should contain the amount of time in minutes that it took to for the order to be delivered from collection and ordering respectively.
+Create an `orders` model that `delivery_time_from_collection` and `delivery_time_from_order`. The column should contain the amount of time in minutes that it took to for the order to be delivered from collection and ordering respectively.
 
 ### 6. Add average delivery times to the customers model
 
