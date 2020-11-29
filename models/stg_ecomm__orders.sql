@@ -12,7 +12,8 @@ with base as (
         status as order_status,
         store_id,
         total_amount,
-        reordered_from_id
+        reordered_from_id,
+        _synced_at
     from base
 
 )

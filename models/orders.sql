@@ -1,7 +1,17 @@
+{{ 
+    config(
+        materialized='incremental',
+        unique_key='order_id'
+    )
+}}
+
 with orders as (
 
     select *
     from {{ ref('stg_ecomm__orders') }}
+    {% if is_incremental() %}
+    where _synced_at > (select dateadd('day', -3, max(_synced_at)) from {{ this }})
+    {% endif %}    
 
 ), deliveries as (
 
@@ -38,6 +48,7 @@ with orders as (
         orders.order_status,
         orders.total_amount,
         orders.store_id,
+        orders._synced_at,
         datediff('minutes',orders.ordered_at,deliveries_filtered.delivered_at) as delivery_time_from_order,
         datediff('minutes',deliveries_filtered.picked_up_at,deliveries_filtered.delivered_at) as delivery_time_from_collection,
         stores.store_name,
@@ -66,7 +77,14 @@ with orders as (
         ) as days_since_last_order
     from joined
 
+), audit_field as (
+
+    select 
+        *,
+        current_timestamp as dbt_uploaded_at
+    from windows
+
 )
 
 select *
-from windows
+from audit_field
