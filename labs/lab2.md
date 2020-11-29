@@ -21,7 +21,7 @@ Things to think about:
 
 ### 3. Add a test to ensure all the delivery time columns are greater than zero (if not null)
 
-In the last lab, we added two columns to each of the `orders` and `customers` tables. In theory, when populated, they should always be populated. We'll need to write a custom schema test that ensures that's always the case.
+In the last lab, we added two columns to each of the `orders` and `customers` tables. In theory, when populated, they should always be greater than zero. We'll need to write a custom schema test that ensures that's always the case.
 
 ### 4. Add a test to ensure that the number of orders in the last 90 days from our `customers` table doesn't exceed the total number of orders in our `orders` table.
 
