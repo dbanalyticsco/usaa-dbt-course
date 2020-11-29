@@ -8,6 +8,11 @@ with orders as (
     select *
     from {{ ref('stg_ecomm__deliveries') }}
 
+), customers as (
+
+    select *
+    from {{ ref('stg_ecomm__customers') }}
+
 ), stores as (
 
     select *
@@ -36,8 +41,24 @@ with orders as (
         using (order_id)
     left join stores 
         using (store_id)
+    left join customers
+        using (customer_id)
+    where customers.email not ilike '%ecommerce.com'
+      and customers.email not ilike '%ecommerce.ca'
+      and customers.email not ilike '%ecommerce.co.uk'
+
+), windows as (
+
+    select
+        *,
+        datediff(
+            'day', 
+            lag(ordered_at) over (partition by customer_id order by ordered_at),
+            ordered_at
+        ) as days_since_last_order
+    from joined
 
 )
 
 select *
-from joined
+from windows

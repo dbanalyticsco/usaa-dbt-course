@@ -39,6 +39,9 @@ with orders as (
     from customers
     left join customer_metrics
         using (customer_id)
+    where email not ilike '%ecommerce.com'
+      and email not ilike '%ecommerce.ca'
+      and email not ilike '%ecommerce.co.uk'
 
 )
 
