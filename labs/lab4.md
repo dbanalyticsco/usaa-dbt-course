@@ -6,7 +6,6 @@ You received a query from a collague in the marketing department who was trying 
 
 Re-write the following query using CTEs instead of subqueries.
 
-TODO: Dylan, add the query here.
 ```sql
 select
     customer_id,
