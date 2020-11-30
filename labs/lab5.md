@@ -4,7 +4,7 @@
 
 It's useful for analysis to know how many days had passed between an order and the prior order (for a given customer). 
 
-Using a window function, add a column `days_since_last_order` to the `orders` model. To make sure you've done it correctly, add a test to ensure that the number, when not-null, is always positive.
+Using a window function, add a column `days_since_last_order` to the `orders` model.
 
 ### 2. Filter out employees from the orders and customers models
 
@@ -20,7 +20,7 @@ Because customers regularly change their addresses, our support team want to kno
 
 First, create a calendar spine using the dbt-utils package.
 
-Then, create a model called `customer__daily` that uses our snapshot data and the calendar spine to have a record of what a customer looked like on each day since they were created. We want to know their address at the _end_ of the day.
+Then, create a model called `customer__daily` that uses our snapshot data and the calendar spine to have a record of what a customer looked like on each day since they were created.
 
 ### 4. Write a query that shows rolling 7-day order volumes
 

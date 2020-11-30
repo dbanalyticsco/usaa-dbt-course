@@ -32,13 +32,3 @@ There's a `store_id` column on the `orders` table that we haven't leveraged yet.
 It turns out, the engineers haven't yet built that table. 
 
 Create a seed file with the store IDs and names. Add a number column to our `orders` model called `store_name`.
-
-### 4. Add a column to the customers model that counts the number of unique addresses they have in the app
-
-Our logistics team wants to see how many different addresses each customer has had set in the app. Unfortunately, the app doesn't keep track of the history.
-
-Luckily, we set up a snapshot table!
-
-Use the snapshot table to add a new column `address_count` to the customers model. We'll need to add the snapshot table as a source.
-
-**N.B.**: Given you have only just set up your snapshot table and it won't have any history, I have uploaded a backfilled one: `select * from raw.snapshots_source.customer_snapshot`.
