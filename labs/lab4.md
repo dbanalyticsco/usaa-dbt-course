@@ -31,15 +31,3 @@ Things to think about:
 * What section of the query is most suitable to be split out?
 * Are there any tests you should apply to the new ephemeral model?
 
-### 3. Optimize the new query from marketing
-
-You've received another query from marketing. While they've used CTEs this time, the query seems to take a long time to run. 
-
-Investigate why the query is taking so long and try to re-write it to speed it up.
-
-TODO: Dylan, add the query here.
-```sql
-select *
-from {{ ref('orders') }}
-```
-
