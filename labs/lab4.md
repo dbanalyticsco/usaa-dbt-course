@@ -11,7 +11,7 @@ select
     customer_id,
     first_name,
     last_name,
-    (select round(avg(total_amount),2) from {{ ref('orders') }} where orders.customer_id = customers.customer_id and ordered_at > current_date 180) as avg_order_amount,
+    (select round(avg(total_amount),2) from {{ ref('orders') }} where orders.customer_id = customers.customer_id and ordered_at > current_date - 180) as avg_order_amount,
     (select count(*) from {{ ref('orders') }} where orders.customer_id = customers.customer_id and ordered_at > current_date - 180) as order_count
 from {{ ref('customers') }}
 where customer_id in (
