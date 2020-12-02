@@ -26,6 +26,8 @@ As part of the payments data work, we also received a dataset with information a
 
 Write a query, using a `lateral flatten`, that contains a record for each zipcode in our new dataset.
 
+The data for this exercise can be found at `raw.geo.countries`.
+
 ### 3. Add a new column to our `orders` model that represents how many times an order has been re-ordered
 
 A few months ago, our engineers added the ability in our application to simply 're-order' a prior order. The ID of the order that was 're-ordered' exists on our source orders data.
