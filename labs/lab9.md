@@ -8,7 +8,7 @@
 
 ### 1. Run the orders model with a larger warehouse.
 
-Despite making the `orders` model, it's still taking too long to build. Add a configuration to the orders model that has it run with the larger `compute_wh_xl` warehouse.
+Despite making the `orders` model, it's still taking too long to build. Add a configuration to the orders model that has it run with the larger `COMPUTE_WH_M` warehouse.
 
 Things to think about:
 * How do you verify that it's actually building with the new warehouse setting?
