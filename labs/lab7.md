@@ -18,9 +18,3 @@ Set up a job that runs every day at 6am (in your timezone) that does the followi
 * Tests all your models, but not sources
 
 Once you've got the job set up, kick it off manually to make sure everything runs/passes. If it doesn't, push the necessary changes.
-
-### 3. Open a pull request
-
-Turn on 'run on pull request' on your production job. Then make a small change to your project on a new branch, commit the change, and then open a pull request.
-
-If everything is working correctly, there should be a new run in your dbt project testing your new changes.
