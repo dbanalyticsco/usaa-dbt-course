@@ -15,12 +15,3 @@ Write a query to check how many days back we need to look back in order to ensur
 ### 3. Re-factor the incremental model to account for a lookback window
 
 Based on your findings in step 2, re-factor the incremental model to ensure we always re-process 99% of orders. As we'll now be re-processing data, we'll need to add a unique key so that records do not get duplicated.
-
-### 4. Add a column to our incremental model that stores when a record was last added or updated in the destination table
-
-Now that our model is incremental, we need additional fields to facilitate auditing the data. 
-
-Add a new column `dbt_uploaded_at`, which represents when a record was last processed. 
-
-Things to think about:
-* How do you ensure the new column gets added to the schema when you call `dbt run`?
