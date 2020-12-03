@@ -10,7 +10,7 @@ with orders as (
     select *
     from {{ ref('stg_ecomm__orders') }}
     {% if is_incremental() %}
-    where _synced_at > (select dateadd('day', -3, max(_synced_at)) from {{ this }})
+    where _synced_at > (select dateadd('day', -3, max(a._synced_at)) from {{ this }} as a)
     {% endif %}    
 
 ), deliveries as (
@@ -66,22 +66,50 @@ with orders as (
       and customers.email not ilike '%ecommerce.ca'
       and customers.email not ilike '%ecommerce.co.uk'
 
+{% if is_incremental() %}
+
+), old_data as (
+
+    select
+        customer_id,
+        max(ordered_at) as ordered_at
+    from {{ this }}
+    group by 1
+
 ), windows as (
 
     select
-        *,
+        joined.*,
         datediff(
             'day', 
-            lag(ordered_at) over (partition by customer_id order by ordered_at),
-            ordered_at
+            coalesce(lag(joined.ordered_at) over (partition by joined.customer_id order by joined.ordered_at), old_data.ordered_at),
+            joined.ordered_at
         ) as days_since_last_order
     from joined
+    left join old_data
+        using (customer_id)
+
+{% else %}
+
+), windows as (
+
+    select
+        joined.*,
+        datediff(
+            'day', 
+            lag(joined.ordered_at) over (partition by joined.customer_id order by joined.ordered_at),
+            joined.ordered_at
+        ) as days_since_last_order
+    from joined
+
+{% endif %}
 
 ), audit_field as (
 
     select 
         *,
-        current_timestamp as dbt_uploaded_at
+        current_timestamp as dbt_uploaded_at,
+        '{{ invocation_id }}' as run_id
     from windows
 
 )
