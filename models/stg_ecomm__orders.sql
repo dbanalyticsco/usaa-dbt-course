@@ -2,6 +2,9 @@ with base as (
 
     select *
     from {{ source('ecomm','orders') }}
+    {% if target.name == 'dev' %}
+    where created_at > current_date - 30
+    {% endif %}
 
 ), fields as (
 

@@ -6,7 +6,7 @@ models:
     columns:
       - name: customer_id
         description: A unique customer ID from our ecommerce application.
-        tests:
+        test:
           - unique
           - not_null
       - name: first_name
