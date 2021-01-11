@@ -17,6 +17,31 @@ Things to think about:
 * What type of snapshot strategy is best for this table?
 * What database and schema should it get built in?
 
+<details>
+  <summary>👉 Click to see step-by-step guide.</summary>
+  
+  (1) Create a file in the `snapshots/` directory called `customers_snapshot.sql` that contains the following code: 
+  ```sql
+    {% snapshot customers_snapshot %}
+
+    {{
+        config(
+        target_database='analytics',
+        target_schema='snapshots_prod',
+        unique_key='id',
+
+        strategy='check',
+        check_cols = 'all',
+        )
+    }}
+
+    select * from {{ source('ecomm', 'customers') }}
+
+    {% endsnapshot %}
+  ``` 
+  (2) Execute `dbt snapshot` in the console at the bottom of your screen to make sure your snapshot run correctly.
+</details>
+
 ### 2. Snapshot the orders table
 
 Similarly, we want a snapshot of the `orders` source table. Set another snapshot up for that table.
@@ -25,6 +50,31 @@ Things to think about:
 * What type of snapshot strategy is best for this table?
 * Should this snapshot get built in the same database and schema as the other snapshot?
 
+<details>
+  <summary>👉 Click to see step-by-step guide.</summary>
+  
+  (1) Create a file in the `snapshots/` directory called `order_snapshot.sql` that contains the following code: 
+  ```sql
+    {% snapshot orders_snapshot %}
+
+    {{
+        config(
+        target_database='analytics',
+        target_schema='snapshots',
+        unique_key='id',
+
+        strategy='timestamp',
+        updated_at='_synced_at',
+        )
+    }}
+
+    select * from {{ source('ecomm', 'orders') }}
+
+    {% endsnapshot %}
+  ``` 
+  (2) Execute `dbt snapshot` in the console at the bottom of your screen to make sure your snapshots run correctly.
+</details>
+
 ### 3. Add the stores seed file to our project
 
 There's a `store_id` column on the `orders` table that we haven't leveraged yet. It looks like it _should_ join to a stores table, but it doesn't seem to exist in our application database.
@@ -32,3 +82,18 @@ There's a `store_id` column on the `orders` table that we haven't leveraged yet.
 It turns out, the engineers haven't yet built that table. 
 
 Create a seed file with the store IDs and names. Add a number column to our `orders` model called `store_name`.
+
+<details>
+  <summary>👉 Click to see step-by-step guide.</summary>
+  
+  (1) Create a file in the `data/` directory called `stores_data.csv` that contains the following data: 
+  ```csv
+    store_id,store_name
+    1,New York
+    2,London
+    3,Tokyo
+  ``` 
+  (2) Execute `dbt seed` in the console at the bottom of your screen to make sure your seed uploads correctly.
+  (3) You can now reference that data as `{{ ref('stores_data') }}`. Add code in your `orders` model that adds a `store_name` column.
+  (4) Execute `dbt run -m orders` to make sure your updates run successfully.
+</details>
