@@ -5,7 +5,7 @@
 So far, we've created one model. That model references two raw tables from our warehouse and 'cleans' up some of that data. Create two new models, `stg_ecomm__orders` and `stg_ecomm__customers`, that do that clean-up. Then, re-factor our existing model to reference those staging models.
 
 <details>
-  <summary>👉Click to see step-by-step guide.</summary>
+  <summary>👉 Click to see step-by-step guide.</summary>
   
   (1) Create a new file in the `models/` directory called `stg_ecomm__orders` that contains the following SQL:
 
@@ -45,7 +45,7 @@ Things to think about:
 * Should you be applying a source freshness check to the data?
 
 <details>
-  <summary>👉Click to see step-by-step guide.</summary>
+  <summary>👉 Click to see step-by-step guide.</summary>
   
   (1) Create a new file in the `models/` directly called `sources.yml`. At a minimum, the file should have the following information:
   ```yml
@@ -75,7 +75,7 @@ Things to think about:
 * What information is important in a column definition?
 
 <details>
-  <summary>👉Click to see step-by-step guide.</summary>
+  <summary>👉 Click to see step-by-step guide.</summary>
   
   (1) Update your `sources.yml` file with descriptions for either the tables or the columns. In this example, I have added a description to each table:
   ```yml
@@ -128,7 +128,7 @@ A new table has arrived in our warehouse, `deliveries`. The `deliveries` table l
 We want to add this table as a source to our project.
 
 <details>
-  <summary>👉Click to see step-by-step guide.</summary>
+  <summary>👉 Click to see step-by-step guide.</summary>
   
   (1) Update your `sources.yml` file with a new table called `deliveries` under the.
 
@@ -141,7 +141,7 @@ Now that we have our new `deliveries` data, our partnerships team wants to know 
 Create an `orders` model that `delivery_time_from_collection` and `delivery_time_from_order`. The column should contain the amount of time in minutes that it took to for the order to be delivered from collection and ordering respectively.
 
 <details>
-  <summary>👉Click to see step-by-step guide.</summary>
+  <summary>👉 Click to see step-by-step guide.</summary>
   
   (1) While we could reference the source table directly in the orders model, we'll follow the standard we've set above and create an `stg_` model for the deliveries table. Create a new file in the `models/` directory called `stg_ecomm__deliveries` that contains the following SQL:
   ```sql
@@ -203,7 +203,7 @@ We've got two new columns in our `orders` model. Our retention team wants to und
 Add `average_delivery_time_from_collection` and `average_delivery_time_from_order` to your `customers` model. This field will be used by the retention team to correlate delivery times and customer retention.
 
 <details>
-  <summary>👉Click to see step-by-step guide.</summary>
+  <summary>👉 Click to see step-by-step guide.</summary>
   
   (1) In the `orders` CTE, replace `{{ ref('stg_ecomm__orders') }}` with `{{ ref('orders') }}`. The model will now reference our new orders model instead of the original `stg_` model.
   (2) In our `customer_metrics` CTE, add two new lines for the average delivery time metrics:
