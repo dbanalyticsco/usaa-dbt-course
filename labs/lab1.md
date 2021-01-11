@@ -4,6 +4,12 @@
 
 So far, we've created one model. That model references two raw tables from our warehouse and 'cleans' up some of that data. Create two new models, `stg_ecomm__orders` and `stg_ecomm__customers`, that do that clean-up. Then, re-factor our existing model to reference those staging models.
 
+<details>
+  <summary>Click to see step-by-step guide.</summary>
+  
+  (a) This would be the first step.
+</details>
+
 ### 2. Add sources to the project
 
 Refactor your project from your pre-work by adding in sources wherever you had hard-coded references to the `ecomm` tables.
