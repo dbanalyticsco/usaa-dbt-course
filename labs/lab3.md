@@ -17,8 +17,34 @@ Things to think about:
 * What type of snapshot strategy is best for this table?
 * What database and schema should it get built in?
 
+### 2. Snapshot the orders table
+
+Similarly, we want a snapshot of the `orders` source table. Set another snapshot up for that table.
+
+Things to think about:
+* What type of snapshot strategy is best for this table?
+* Should this snapshot get built in the same database and schema as the other snapshot?
+
+### 3. Add the stores seed file to our project
+
+There's a `store_id` column on the `orders` table that we haven't leveraged yet. It looks like it _should_ join to a stores table, but it doesn't seem to exist in our application database.
+
+It turns out, the engineers haven't yet built that table. 
+
+Create a seed file with the store IDs and names. Add a number column to our `orders` model called `store_name`.
+
+## Links and Walkthrough Guides
+
+The following links will be useful for these exercises:
+
+* [dbt Docs: Snapshots](https://docs.getdbt.com/docs/building-a-dbt-project/snapshots/)
+* [dbt Docs: Jinja](https://docs.getdbt.com/docs/building-a-dbt-project/seeds/)
+* [Slides from presentation](https://docs.google.com/presentation/d/1swZm383DK1Xdg86aUC8FpSEu6bqYkw86of6oCmqnFCQ/edit?usp=sharing)
+
+Click on the links below for step-by-step guides to each section above.
+
 <details>
-  <summary>👉 Click to see step-by-step guide.</summary>
+  <summary>👉 Section 1</summary>
   
   (1) Create a file in the `snapshots/` directory called `customers_snapshot.sql` that contains the following code: 
   ```sql
@@ -42,16 +68,8 @@ Things to think about:
   (2) Execute `dbt snapshot` in the console at the bottom of your screen to make sure your snapshot run correctly.
 </details>
 
-### 2. Snapshot the orders table
-
-Similarly, we want a snapshot of the `orders` source table. Set another snapshot up for that table.
-
-Things to think about:
-* What type of snapshot strategy is best for this table?
-* Should this snapshot get built in the same database and schema as the other snapshot?
-
 <details>
-  <summary>👉 Click to see step-by-step guide.</summary>
+  <summary>👉 Section 2</summary>
   
   (1) Create a file in the `snapshots/` directory called `order_snapshot.sql` that contains the following code: 
   ```sql
@@ -75,16 +93,8 @@ Things to think about:
   (2) Execute `dbt snapshot` in the console at the bottom of your screen to make sure your snapshots run correctly.
 </details>
 
-### 3. Add the stores seed file to our project
-
-There's a `store_id` column on the `orders` table that we haven't leveraged yet. It looks like it _should_ join to a stores table, but it doesn't seem to exist in our application database.
-
-It turns out, the engineers haven't yet built that table. 
-
-Create a seed file with the store IDs and names. Add a number column to our `orders` model called `store_name`.
-
 <details>
-  <summary>👉 Click to see step-by-step guide.</summary>
+  <summary>👉 Section 3</summary>
   
   (1) Create a file in the `data/` directory called `stores_data.csv` that contains the following data: 
   ```csv
