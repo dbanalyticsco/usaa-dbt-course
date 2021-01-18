@@ -28,3 +28,101 @@ In the last lab, we added two columns to each of the `orders` and `customers` ta
 Having added the new columns in step 2, we want to double-check that the sum of the column on the `customers` model doesn't exceed the total number of orders in our `orders` model.
 
 Given the specificity of this test, we likely don't want to write a custom schema test. Could we use a data test to do it?
+
+## Links and Walkthrough Guides
+
+The following links will be useful for these exercises:
+
+* [dbt Docs: Testing](https://docs.getdbt.com/docs/building-a-dbt-project/tests)
+* [dbt Docs: Jinja](https://docs.getdbt.com/docs/building-a-dbt-project/jinja-macros/)
+* [dbt Docs: Custom Schema Docs](https://docs.getdbt.com/docs/guides/writing-custom-schema-tests/)
+* [dbt Docs: Data Tests](https://docs.getdbt.com/docs/building-a-dbt-project/tests/#data-tests)
+* [Jinja Template Designer Docs](https://jinja.palletsprojects.com/en/2.11.x/templates/)
+* [Slides from presentation](https://docs.google.com/presentation/d/1SOpYdmgagY36cT7kL3A7Sc0ti5EWMmX4xX6PNvkJoaY/edit?usp=sharing)
+
+Click on the links below for step-by-step guides to each section above.
+
+<details>
+  <summary>👉 Section 1</summary>
+  
+  (1) Add `unique` and `not_null` tests to the `schema.yml` files. For the `orders` table, it will containt the following information: 
+  ```yml
+    - name: orders
+      columns:
+        - name: order_id
+          tests:
+            - unique
+            - not_null
+  ``` 
+  (2) Execute `dbt test` in the console at the bottom of your screen to make sure all the tests pass.
+</details>
+
+<details>
+  <summary>👉 Section 2</summary>
+  
+  (1) Given the SQL for the three columns will be _almost_ identical, we could use a Jinja `for` loop here. Add the following SQL to your `customer_metrics` CTE:
+  ```sql
+    {% for days in [30,90,360] %}
+    count(case when ordered_at > current_date - {{ days }} then 1 end) as count_orders_last_{{ days }}_days
+    {% if not loop.last %} , {% endif %}
+    {% endfor %}
+  ```
+  (2) Add your three new columns to the `joined` CTE.
+  (3) Execute `dbt run` in the console at the bottom of your screen to make sure everything runs successfully.
+</details>
+
+<details>
+  <summary>👉 Section 3</summary>
+  
+  (1) Given this feels like a test that will be broadly re-usable, we'll likely want to create a custom schema test. Create a new file in the `macros/` directory called `test_greater_than_zero.sql` that contains the following code:
+  ```sql
+    {% macro test_greater_than_zero(model) %}
+
+    {% set column_name = kwargs.get('column_name', kwargs.get('arg')) %}
+
+    select count(*) as validation_errors
+    from {{ model }}
+    where {{ column_name }} <= 0
+
+    {% endmacro %}
+  ```
+  (2) Add the tests to your `schema.yml` file. For the column `delivery_time_from_collection` in the `orders` model, it would look as follows:
+  ```yml
+    - name: orders
+      columns:
+        - name: delivery_time_from_collection
+          tests:
+            - greater_than_zero
+  ```
+  (3) Execute `dbt test` in the console at the bottom of your screen to make sure all the tests pass.
+</details>
+
+<details>
+  <summary>👉 Section 4</summary>
+  
+  (1) Create a new file in the `tests/` directory called `count_orders_check.sql` that contains the following SQL:
+  ```sql
+    with orders as (
+
+        select count(*) as orders_count
+        from {{ ref('orders') }}
+
+    ), customers as (
+
+        select sum(count_orders_last_90_days) as customers_count
+        from {{ ref('customers') }}
+
+    ), joined as (
+
+        select *
+        from orders
+        cross join customers
+        where customers_count > orders_count
+
+    )
+
+    select *
+    from joined
+  ```
+  (2) Execute `dbt test` in the console at the bottom of your screen to make sure all the tests pass.
+</details>
