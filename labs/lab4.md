@@ -4,7 +4,7 @@
 
 You received a query from a collague in the marketing department who was trying to pull some information from your warehouse. Unfortunately, they exclusively used subqueries and you want to clean it up before providing your feedback because you think it will be easier to read.
 
-Re-write the following query using CTEs instead of subqueries.
+Create a new file for the following query and re-write it using CTEs instead of subqueries.
 
 ```sql
 select
@@ -21,8 +21,27 @@ where customer_id in (
 )
 ```
 
+### 2. Break out the query into ephemeral models.
+
+After reviewing the query, you think it would be useful to add it to your dbt project. However, you think part of the query is going to be re-usable elsewhere and want to break it up.
+
+Move part of the query into another model. You won't want the new model to appear in the warehouse, so set it to be materialized as ephemeral.
+
+Things to think about: 
+* What section of the query is most suitable to be split out?
+* Are there any tests you should apply to the new ephemeral model?
+
+## Links and Walkthrough Guides
+
+The following links will be useful for these exercises:
+
+* [dbt Docs: Ephemeral materialization](https://docs.getdbt.com/docs/building-a-dbt-project/building-models/materializations/#ephemeral)
+* [Slides from presentation](https://docs.google.com/presentation/d/1ULVXIWBOysH4R4KvkAMaqjAUMysf-Xe46Uowr5bsFZ0/edit#slide=id.g35f391192_00)
+
+Click on the links below for step-by-step guides to each section above.
+
 <details>
-  <summary>👉 Click to see step-by-step guide.</summary>
+  <summary>👉 Section 1</summary>
   
   (1) Create a file in the `models/` directory called `rpt_7_week_active_customers.sql` and put the query above in it.
   (2) There are two bits that we feel we could re-factor into CTEs. The first is the subquery in the `where` clause. We can also join it instead of doing a `where customer_id in`. We can pull this out so that our file looks as follows:
@@ -80,23 +99,14 @@ where customer_id in (
   (3) Execute `dbt run -m +rpt_7_week_active_customers` to make sure your model runs successfully.
 </details>
 
-### 2. Break out the query into ephemeral models.
-
-After reviewing the query, you think it would be useful to add it to your dbt project. However, you think part of the query is going to be re-usable elsewhere and want to break it up.
-
-Move part of the query into another model. You won't want the new model to appear in the warehouse, so set it to be materialized as ephemeral.
-
-Things to think about: 
-* What section of the query is most suitable to be split out?
-* Are there any tests you should apply to the new ephemeral model?
-
 <details>
-  <summary>👉 Click to see step-by-step guide.</summary>
+  <summary>👉 Section 2</summary>
   
   (1) Create two new `.sql` files for the CTEs and move the SQL from the CTEs across into them.
   
   (2) Re-factor the initial file by replacing the code in the CTEs with `select *` queries from the new models.
-  
-  (3) Execute `dbt run -m +rpt_7_week_active_customers` to make sure your model runs successfully.
-</details>
 
+  (3) Add a config to the two new models so that they get `materialized` as `ephemeral`.
+  
+  (4) Execute `dbt run -m +rpt_7_week_active_customers` to make sure your model runs successfully.
+</details>
