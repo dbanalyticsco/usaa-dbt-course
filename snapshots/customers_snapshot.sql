@@ -11,6 +11,8 @@
     )
 }}
 
+-- this will snapshot the entirety of my customers source.
+
 select * from {{ source('ecomm', 'customers') }}
 
 {% endsnapshot %}
