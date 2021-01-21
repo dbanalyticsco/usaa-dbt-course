@@ -8,7 +8,7 @@
 
 ### 1. Run the orders model with a larger warehouse.
 
-Despite making the `orders` model, it's still taking too long to build. Add a configuration to the orders model that has it run with the larger `COMPUTE_WH_M` warehouse.
+Despite making the `orders` model incremental, it's still taking too long to build. Add a configuration to the orders model that has it run with the larger `COMPUTE_WH_M` warehouse.
 
 Things to think about:
 * How do you verify that it's actually building with the new warehouse setting?
@@ -24,3 +24,47 @@ Add the query tag to your project and then verify that it's working.
 While our orders model now builds quickly, it's still very slow to query.
 
 Add a `cluster_by` config to the `orders` model, based on what you think the most common query pattern will be.
+
+## Links and Walkthrough Guides
+
+The following links will be useful for these exercises:
+
+* [dbt Docs: Configuring Incremental Models](https://docs.getdbt.com/docs/building-a-dbt-project/building-models/configuring-incremental-models/)
+* [dbt Discourse: On the limits of incrementality](https://discourse.getdbt.com/t/on-the-limits-of-incrementality/303)
+* [Slides from presentation](https://docs.google.com/presentation/d/1X2RDZ0V2x7GtMwfB-4uPh0p366vEWABhWYVJoMNn1wo/edit)
+
+Click on the links below for step-by-step guides to each section above.
+
+<details>
+  <summary>👉 Section 1</summary>
+  
+  (1) Change the config in our orders model by adding the following:
+  ```
+  snowflake_warehouse: 'COMPUTE_WH_M'
+  ```
+  (2) Execute `dbt run -m orders`. Can you see your query in the Snowflake query history with the larger warehouse?
+
+</details>
+
+<details>
+  <summary>👉 Section 2</summary>
+  
+  (1) To add this config to all our mdoels, we'll want to make the change in our dbt_project.yml file. We need it to be under the `models/` key:
+  ```yml
+  models:
+    +query_tag: 'dbt_run'
+  ```
+  (2) Execute `dbt run`. Can you see the query tags in Snowflake?
+
+</details>
+
+<details>
+  <summary>👉 Section 3</summary>
+  
+  (1) I'm going to assume that filtering by the `ordered_at` is going to be the most common query pattern. We're therefore going to cluster by that column, by adding the following line to the config in the `orders` model:
+  ```
+  cluster_by=['ordered_at']
+  ```
+  (2) Execute `dbt run -m orders` to make sure everything works correctly. Can you see the 'cluster by' section of the logs?
+
+</details>
