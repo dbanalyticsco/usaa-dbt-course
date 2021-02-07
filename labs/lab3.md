@@ -33,6 +33,12 @@ It turns out, the engineers haven't yet built that table.
 
 Create a seed file with the store IDs and names. Add a number column to our `orders` model called `store_name`.
 
+The store mappings are as follows:
+
+* Store ID 1: New York
+* Store ID 2: Los Angeles
+* Store ID 3: Dallas
+
 ## Links and Walkthrough Guides
 
 The following links will be useful for these exercises:
