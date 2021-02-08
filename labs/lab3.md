@@ -59,7 +59,7 @@ Click on the links below for step-by-step guides to each section above.
     {{
         config(
         target_database='analytics',
-        target_schema='snapshots_prod',
+        target_schema='snapshots_initials',
         unique_key='id',
 
         strategy='check',
@@ -84,7 +84,7 @@ Click on the links below for step-by-step guides to each section above.
     {{
         config(
         target_database='analytics',
-        target_schema='snapshots',
+        target_schema='snapshots_initials',
         unique_key='id',
 
         strategy='timestamp',
