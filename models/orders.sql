@@ -10,7 +10,7 @@ with orders as (
     select *
     from {{ ref('stg_ecomm__orders') }}
     {% if is_incremental() %}
-    where _synced_at > (select dateadd('day', -6, max(_synced_at)) from {{ this }})
+    where _synced_at > (select dateadd('day', -12, max(_synced_at)) from {{ this }})
     {% endif %}    
 
 ), deliveries as (
