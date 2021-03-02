@@ -61,6 +61,7 @@ The following links will be useful for these exercises:
 
 * [Snowflake Docs: Functions](https://docs.snowflake.com/en/sql-reference/functions-all.html)
 * [Snowflake Docs: Window Functions](https://docs.snowflake.com/en/sql-reference/functions-analytic.html)
+* [Snowflake Docs: Querying Semi-Structured Data](https://docs.snowflake.com/en/user-guide/querying-semistructured.html)
 * [dbt Docs: Packages](https://docs.getdbt.com/docs/building-a-dbt-project/package-management/)
 * [Slides from presentation](https://docs.google.com/presentation/d/1CJCWaFTe0PHJ2K9ltryJdTmZB7k07cYTi4TJisu9LHw/edit?usp=sharing)
 
