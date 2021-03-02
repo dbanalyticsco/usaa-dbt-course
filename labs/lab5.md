@@ -1,4 +1,4 @@
-## Lab 5: Window Functions, Filtering and Calendar Spines
+## Lab 5: Window Functions, Calendar Spines, and Semi-Structured Data
 
 ### 1. Add a `days_since_last_order` column to the `orders` model.
 
@@ -14,7 +14,32 @@ If you haven't already, create a staging model for the customers data. In the st
 
 That filter should fix the customers data, but we still need to add a filter to the `orders` model. Filter out any employee orders.
 
-### 3. Create a `customer__daily` model
+### 3. Create a staging model for the payments data
+
+We've recently integrated our payments data into Snowflake. The data comes as a JSON API response from the source system and we decided it would be easier to just put it in Snowflake in the same format.
+
+The table can be found at `raw.stripe.payments`.
+
+Create a staging model for the new payments data that includes the following fields:
+* order_id
+* payment_id
+* payment_type
+* payment_amount
+* created_at
+
+Things to think about: 
+* Does our new model need tests?
+* Does every column have the correct datatype?
+
+### 4. Write a query that provides a record for each zipcode
+
+As part of the payments data work, we also received a dataset with information about US zipcodes. Again, this data has been provided to us as a single JSON object and we want to unnest it so that each record contains a zipcode and relevant information about that zipcode.
+
+Write a query, using a `lateral flatten`, that contains a record for each zipcode in our new dataset.
+
+The data for this exercise can be found at `raw.geo.countries`.
+
+### 5. Create a `customer__daily` model
 
 Because customers regularly change their addresses, our support team want to know what address a customer had in a system on a given day.
 
@@ -24,7 +49,7 @@ Then, create a model called `customer__daily` that uses our snapshot data and th
 
 **N.B.**: For the purposes of this exercise, given we don't have our own snapshot data, please use the following table for the snapshot data: `analytics.snapshots_prod.customers_snapshot`.
 
-### 4. Write a query that shows rolling 7-day order volumes
+### 6. Write a query that shows rolling 7-day order volumes
 
 You've had a request from the CEO to create a dashboard with the rolling 7-day order amounts. Because some days don't have orders, you think you'll need to use a calendar spine to create it.
 
@@ -66,6 +91,69 @@ Click on the links below for step-by-step guides to each section above.
 
 <details>
   <summary>👉 Section 3</summary>
+  
+  (1) Add a new source for the Stripe data.
+
+  (2) Create a new file `stg_stripe__payments.sql` in our `models/` directory.
+
+  (3) Pull out the necessary columns from the JSON. Write a query around the following column definitions:
+  ```sql
+    json_data:order_id as order_id,
+    json_data:id as payment_id,
+    json_data:method as payment_type,
+    json_data:amount::int / 100.0 as payment_amount,
+    json_data:created_at::timestamp as created_at
+  ```
+
+  (4) Execute `dbt run -m stg_stripe__payments` to make sure everything is working correctly. 
+
+</details>
+
+<details>
+  <summary>👉 Section 4</summary>
+
+  (1) In a new SQL query, inspect the format of the table by running `select * from raw.geo.countries`.
+
+  (2) Let's 'unnest' the `states` array by adding a `lateral flatten` to the query:
+  ```sql
+    select 
+        country,
+        s.value:state as state,
+        s.value:zipcodes as zipcodes
+    from raw.geo.countries
+    left join lateral flatten (input => states) as s
+  ```
+  We now have a record for each state, which we can see has another array in it called `zipcodes`.
+
+  (3) Let's 'unnest' the `zipcodes` array by adding another `lateral flatten`:
+  ```sql
+    select 
+        country,
+        s.value:state as state,
+        c.value:zipcode as zipcode,
+        c.value:city as city
+    from raw.geo.countries
+    left join lateral flatten (input => states) as s
+    left join lateral flatten (input => s.value:zipcodes) as c
+  ```
+
+  (4) It looks like some of our columns aren't coming through as the correct data type. Let's cast them to strings:
+  ```sql
+    select 
+        country,
+        s.value:state::varchar as state,
+        c.value:zipcode::varchar as zipcode,
+        c.value:city::varchar as city
+    from raw.geo.countries
+    left join lateral flatten (input => states) as s
+    left join lateral flatten (input => s.value:zipcodes) as c
+  ```
+  We should now have a complete query.
+
+</details>
+
+<details>
+  <summary>👉 Section 5</summary>
   
   (1) Create a `packages.yml` file in the root directory of your project. Add the following code to it to add the `dbt_utils` package:
   ```yaml
@@ -113,7 +201,7 @@ Click on the links below for step-by-step guides to each section above.
 </details>
 
 <details>
-  <summary>👉 Section 4</summary>
+  <summary>👉 Section 6</summary>
   
   (1) Write a SQL query that joins our `orders` and `calendar` models. The join should work in a such a way that the prior 7 days of orders get joined to a given `date_day` in the `calendar` model. That way, you can then aggregate this joined query, grouping by the `date_day` column, in order to count how many orders there were on a rolling 7 day basis.
 </details>
