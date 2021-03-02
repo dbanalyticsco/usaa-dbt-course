@@ -33,6 +33,12 @@ It turns out, the engineers haven't yet built that table.
 
 Create a seed file with the store IDs and names. Add a number column to our `orders` model called `store_name`.
 
+The store mappings are as follows:
+
+* Store ID 1: New York
+* Store ID 2: Los Angeles
+* Store ID 3: Dallas
+
 ## Links and Walkthrough Guides
 
 The following links will be useful for these exercises:
@@ -53,7 +59,7 @@ Click on the links below for step-by-step guides to each section above.
     {{
         config(
         target_database='analytics',
-        target_schema='snapshots_prod',
+        target_schema='snapshots_initials',
         unique_key='id',
 
         strategy='check',
@@ -78,7 +84,7 @@ Click on the links below for step-by-step guides to each section above.
     {{
         config(
         target_database='analytics',
-        target_schema='snapshots',
+        target_schema='snapshots_initials',
         unique_key='id',
 
         strategy='timestamp',
