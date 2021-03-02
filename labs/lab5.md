@@ -163,6 +163,7 @@ Click on the links below for step-by-step guides to each section above.
       version: 0.6.4
   ```   
   Make sure you run `dbt deps` so that this package is imported into your project.
+  
   (2) Create a new model called `calendar.sql`. Add the following code to it to generate a calendar spine:
   ```sql
   {{ dbt_utils.date_spine(
