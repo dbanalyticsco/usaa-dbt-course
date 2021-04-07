@@ -8,11 +8,6 @@ with orders as (
     select *
     from {{ ref('stg_ecomm__deliveries') }}
 
-), stores as (
-
-    select *
-    from {{ ref('stores_data') }}
-
 ), deliveries_filtered as (
 
     select *
@@ -29,13 +24,10 @@ with orders as (
         orders.total_amount,
         orders.store_id,
         datediff('minutes',orders.ordered_at,deliveries_filtered.delivered_at) as delivery_time_from_order,
-        datediff('minutes',deliveries_filtered.picked_up_at,deliveries_filtered.delivered_at) as delivery_time_from_collection,
-        stores.store_name
+        datediff('minutes',deliveries_filtered.picked_up_at,deliveries_filtered.delivered_at) as delivery_time_from_collection
     from orders
     left join deliveries_filtered
         using (order_id)
-    left join stores 
-        using (store_id)
 
 )
 
